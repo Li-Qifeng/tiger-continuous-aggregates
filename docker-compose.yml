@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: timescale/timescaledb-ha:pg16
+    container_name: tiger-cagg-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tigerpass
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  benchmark:
+    build: .
+    container_name: tiger-cagg-bench
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://postgres:tigerpass@db:5432/postgres"

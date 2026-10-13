@@ -1,0 +1,6 @@
+{
+  "raw_execution_time_ms": 5.772,
+  "cagg_execution_time_ms": 13.995,
+  "speedup_factor": 0.4,
+  "total_records": 25000
+}
